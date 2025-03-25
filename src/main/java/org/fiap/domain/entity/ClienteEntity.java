@@ -36,31 +36,30 @@ public class ClienteEntity implements Serializable {
     @NotNull(message = "O cpf não pode ser nulo. Por favor, forneça um valor.")
     private String cpf;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dataNascimento;
 
-    @Column(nullable = false, length = 255)
+    @Column(length = 255)
     private String rua;
 
-    @Column(nullable = false)
+    @Column
     private Integer numero;
 
-    @Column(nullable = false, length = 10)
     private String cep;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String cidade;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String estado;
 
-    @Column(nullable = true, length = 255)
+    @Column(length = 255)
     private String complemento;
 
-    @Column(nullable = false, updatable = false)
+    @Column
     private LocalDate dtCriacao;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dtAtualizacao;
 
     public ClienteEntity(ClienteDTO dto) {
