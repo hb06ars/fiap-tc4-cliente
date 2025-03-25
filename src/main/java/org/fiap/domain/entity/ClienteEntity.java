@@ -38,27 +38,21 @@ public class ClienteEntity implements Serializable {
     private String cpf;
 
     @Column(nullable = false)
-    @NotNull(message = "A data de nascimento não pode ser nula.")
     private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 255)
-    @NotNull(message = "A rua não pode ser nula. Por favor, forneça um valor.")
     private String rua;
 
     @Column(nullable = false)
-    @NotNull(message = "O número não pode ser nulo. Por favor, forneça um valor.")
     private Integer numero;
 
     @Column(nullable = false, length = 10)
-    @NotNull(message = "O CEP não pode ser nulo. Por favor, forneça um valor.")
     private String cep;
 
     @Column(nullable = false, length = 100)
-    @NotNull(message = "A cidade não pode ser nula. Por favor, forneça um valor.")
     private String cidade;
 
     @Column(nullable = false, length = 100)
-    @NotNull(message = "O estado não pode ser nulo. Por favor, forneça um valor.")
     private String estado;
 
     @Column(nullable = true, length = 255)
