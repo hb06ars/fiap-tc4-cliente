@@ -1,5 +1,11 @@
 package org.fiap.infra.repository.postgres.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.fiap.domain.dto.ClienteDTO;
 import org.fiap.domain.entity.ClienteEntity;
 import org.fiap.infra.repository.postgres.ClienteCustomRepository;
@@ -9,12 +15,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -62,8 +62,8 @@ public class ClienteCustomRepositoryImpl implements ClienteCustomRepository {
         }
 
         List<ClienteEntity> resultList = entityManager.createQuery(query)
-                .setFirstResult((int) pageable.getOffset())  // Define o início da página
-                .setMaxResults(pageable.getPageSize())      // Define o tamanho da página
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
         List<ClienteDTO> clienteDTOs = new ArrayList<>();
