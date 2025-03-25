@@ -4,8 +4,12 @@ import org.fiap.domain.dto.ClienteDTO;
 import org.fiap.domain.entity.ClienteEntity;
 import org.fiap.domain.util.AjustesString;
 import org.fiap.infra.exceptions.RecordAlreadyExistsException;
+import org.fiap.infra.repository.postgres.ClienteCustomRepository;
 import org.fiap.infra.repository.postgres.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +21,12 @@ import java.util.Optional;
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private final ClienteCustomRepository customRepository;
 
     @Autowired
-    public ClienteService(ClienteRepository repository) {
+    public ClienteService(ClienteRepository repository, ClienteCustomRepository customRepository) {
         this.repository = repository;
+        this.customRepository = customRepository;
     }
 
     @Transactional(readOnly = true)
@@ -44,18 +50,17 @@ public class ClienteService {
     }
 
     @Transactional
-    public ClienteDTO update(Long id, ClienteDTO usuarioSalvar) {
-        ClienteEntity usuarioExistente = repository.findById(id).orElse(null);
+    public ClienteDTO update(Long id, ClienteDTO clienteSalvar) {
+        ClienteEntity clienteExistente = repository.findById(id).orElse(null);
         var registroRepetido = repository.findByCpf(
-                AjustesString.removerTracosCpf(usuarioSalvar.getCpf()));
-        if (usuarioExistente != null && (registroRepetido == null ||
-                registroRepetido.getId().equals(Objects.requireNonNull(usuarioExistente).getId()))) {
-            usuarioExistente.setNome(usuarioSalvar.getNome());
-            usuarioExistente.setCpf(usuarioSalvar.getCpf());
-            usuarioExistente.setCelular(usuarioSalvar.getCelular());
-            return new ClienteDTO(repository.save(usuarioExistente));
+                AjustesString.removerTracosCpf(clienteSalvar.getCpf()));
+        if (clienteExistente != null && (registroRepetido == null ||
+                registroRepetido.getId().equals(Objects.requireNonNull(clienteExistente).getId()))) {
+            clienteExistente.setNome(clienteSalvar.getNome());
+            clienteExistente.setCpf(clienteSalvar.getCpf());
+            return new ClienteDTO(repository.save(clienteExistente));
         } else {
-            throw new RuntimeException("Usuário " + id + " não encontrado.");
+            throw new RuntimeException("Cliente " + id + " não encontrado.");
         }
     }
 
@@ -64,17 +69,22 @@ public class ClienteService {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
         } else {
-            throw new RuntimeException("Usuário com ID: " + id + ", não encontrado.");
+            throw new RuntimeException("Cliente com ID: " + id + ", não encontrado.");
         }
     }
 
-    public ClienteDTO findByCpf(String email, String celular) {
-        var usuarioEncontrado = repository.findByCpf(
-                celular != null && !celular.isBlank() ? AjustesString.removerCaracteresCel(celular.trim()) : null);
+    public ClienteDTO findByCpf(String cpf) {
+        var clienteEncontrado = repository.findByCpf(
+                cpf != null && !cpf.isBlank() ? AjustesString.removerTracosCpf(cpf.trim()) : null);
 
-        if (usuarioEncontrado == null)
-            throw new RuntimeException("Usuário não encontrado.");
-        return new ClienteDTO(usuarioEncontrado);
+        if (clienteEncontrado == null)
+            throw new RuntimeException("Cliente não encontrado.");
+        return new ClienteDTO(clienteEncontrado);
+    }
+
+    public Page<ClienteDTO> buscaPaginada(ClienteDTO dto, int page, int size, String sortField, String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size);
+        return customRepository.findAllByCriteria(dto, pageable, sortField, sortDirection);
     }
 }
 

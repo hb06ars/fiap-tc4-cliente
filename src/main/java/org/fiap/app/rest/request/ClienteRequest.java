@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -22,7 +23,14 @@ public class ClienteRequest {
     @NotNull(message = "O cpf não pode ser nulo. Por favor, forneça um valor.")
     private String cpf;
 
-    @NotNull(message = "O celular não pode ser nulo. Por favor, forneça um valor.")
-    private String celular;
+    private LocalDate dataNascimento;
+    private String rua;
+    private Integer numero;
+    private String cep;
+    private String cidade;
+    private String estado;
+    private String complemento;
+    private LocalDate dtCriacao;
+    private LocalDate dtAtualizacao;
 
 }
