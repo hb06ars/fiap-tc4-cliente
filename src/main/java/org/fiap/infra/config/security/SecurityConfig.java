@@ -17,13 +17,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("*", "/cliente**")
-                        .access((authentication, context) -> {
+                        .requestMatchers("/cliente/**").access((authentication, context) -> {
                             String ip = context.getRequest().getRemoteAddr();
-                            if ("127.0.0.1".equals(ip)) {
-                                return new AuthorizationDecision(true);
-                            }
-                            return new AuthorizationDecision(false);
+                            return new AuthorizationDecision("127.0.0.1".equals(ip));
                         })
                         .anyRequest().authenticated()
                 )

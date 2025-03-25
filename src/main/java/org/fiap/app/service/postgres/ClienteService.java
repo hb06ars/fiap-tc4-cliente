@@ -53,12 +53,9 @@ public class ClienteService {
     @Transactional
     public ClienteDTO update(Long id, ClienteDTO clienteSalvar) {
         ClienteEntity clienteExistente = repository.findById(id).orElse(null);
-        var registroRepetido = repository.findByCpf(
-                AjustesString.removerTracosCpf(clienteSalvar.getCpf()));
-        if (clienteExistente != null && (registroRepetido == null ||
-                registroRepetido.getId().equals(Objects.requireNonNull(clienteExistente).getId()))) {
+        if (clienteExistente != null &&
+                clienteExistente.getCpf().equals(Objects.requireNonNull(clienteExistente).getCpf())) {
             clienteExistente.setNome(clienteSalvar.getNome());
-            clienteExistente.setCpf(clienteSalvar.getCpf());
             return new ClienteDTO(repository.save(clienteExistente));
         } else {
             throw new ObjectNotFoundException("Cliente " + id + " não encontrado.");
