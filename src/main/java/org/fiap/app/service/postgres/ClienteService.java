@@ -3,6 +3,7 @@ package org.fiap.app.service.postgres;
 import org.fiap.domain.dto.ClienteDTO;
 import org.fiap.domain.entity.ClienteEntity;
 import org.fiap.domain.util.AjustesString;
+import org.fiap.infra.exceptions.ObjectNotFoundException;
 import org.fiap.infra.exceptions.RecordAlreadyExistsException;
 import org.fiap.infra.repository.postgres.ClienteCustomRepository;
 import org.fiap.infra.repository.postgres.ClienteRepository;
@@ -60,7 +61,7 @@ public class ClienteService {
             clienteExistente.setCpf(clienteSalvar.getCpf());
             return new ClienteDTO(repository.save(clienteExistente));
         } else {
-            throw new RuntimeException("Cliente " + id + " não encontrado.");
+            throw new ObjectNotFoundException("Cliente " + id + " não encontrado.");
         }
     }
 
@@ -69,7 +70,7 @@ public class ClienteService {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
         } else {
-            throw new RuntimeException("Cliente com ID: " + id + ", não encontrado.");
+            throw new ObjectNotFoundException("Cliente com ID: " + id + ", não encontrado.");
         }
     }
 
@@ -78,7 +79,7 @@ public class ClienteService {
                 cpf != null && !cpf.isBlank() ? AjustesString.removerTracosCpf(cpf.trim()) : null);
 
         if (clienteEncontrado == null)
-            throw new RuntimeException("Cliente não encontrado.");
+            throw new ObjectNotFoundException("Cliente não encontrado.");
         return new ClienteDTO(clienteEncontrado);
     }
 
