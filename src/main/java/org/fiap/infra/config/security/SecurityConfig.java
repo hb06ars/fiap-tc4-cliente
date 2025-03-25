@@ -15,7 +15,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET, "/cliente**")
+                        .requestMatchers("*", "/cliente**")
                         .hasIpAddress("localhost")
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable());
