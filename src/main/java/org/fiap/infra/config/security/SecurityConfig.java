@@ -3,8 +3,10 @@ package org.fiap.infra.config.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -14,11 +16,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(authz -> authz
+                .authorizeHttpRequests(authz -> authz
                         .requestMatchers("*", "/cliente**")
-                        .hasIpAddress("localhost")
-                        .anyRequest().authenticated())
-                .csrf(csrf -> csrf.disable());
+                        .access((authentication, context) -> {
+                            String ip = context.getRequest().getRemoteAddr();
+                            if ("127.0.0.1".equals(ip)) {
+                                return new AuthorizationDecision(true);
+                            }
+                            return new AuthorizationDecision(false);
+                        })
+                        .anyRequest().authenticated()
+                )
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
