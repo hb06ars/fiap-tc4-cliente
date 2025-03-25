@@ -15,10 +15,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET, "/cliente") // Apenas acessa o endpoint /cliente
-                        .hasIpAddress("127.0.0.1") // Limita acesso ao IP local
-                        .anyRequest().authenticated()) // Requer autenticação para outras rotas
-                .csrf(csrf -> csrf.disable()); // Desativa CSRF, se necessário
+                        .requestMatchers(HttpMethod.GET, "/cliente**")
+                        .hasIpAddress("localhost")
+                        .anyRequest().authenticated())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
