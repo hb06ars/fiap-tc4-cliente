@@ -56,6 +56,15 @@ public class ClienteService {
         if (clienteExistente != null &&
                 clienteExistente.getCpf().equals(Objects.requireNonNull(clienteExistente).getCpf())) {
             clienteExistente.setNome(clienteSalvar.getNome());
+            clienteExistente.setCpf(clienteSalvar.getCpf());
+            clienteExistente.setDataNascimento(clienteSalvar.getDataNascimento());
+            clienteExistente.setRua(clienteSalvar.getRua());
+            clienteExistente.setNumero(clienteSalvar.getNumero());
+            clienteExistente.setCep(clienteSalvar.getCep());
+            clienteExistente.setCidade(clienteSalvar.getCidade());
+            clienteExistente.setEstado(clienteSalvar.getEstado());
+            clienteExistente.setComplemento(clienteSalvar.getComplemento());
+            clienteExistente.setDtAtualizacao(clienteSalvar.getDtAtualizacao());
             return new ClienteDTO(repository.save(clienteExistente));
         } else {
             throw new ObjectNotFoundException("Cliente " + id + " não encontrado.");
