@@ -88,6 +88,17 @@ public class Controller {
         return ResponseEntity.ok(service.findByCpf(cpf));
     }
 
+    @Operation(summary = "Buscar Cliente por ID",
+            description = "Buscar o Cliente por ID.")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Busca realizada com sucesso.")
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> buscarPorId(
+            @PathVariable(name = "id") Long id
+    ) {
+        log.info("requisição para buscar cliente por id foi efetuada");
+        return ResponseEntity.ok(service.findById(id));
+    }
+
     @Operation(summary = "Deletar Cliente",
             description = "Deleção do Cliente.")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Deleção realizada com sucesso.")
