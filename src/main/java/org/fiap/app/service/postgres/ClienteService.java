@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class ClienteService {
             clienteExistente.setCidade(clienteSalvar.getCidade());
             clienteExistente.setEstado(clienteSalvar.getEstado());
             clienteExistente.setComplemento(clienteSalvar.getComplemento());
-            clienteExistente.setDtAtualizacao(clienteSalvar.getDtAtualizacao());
+            clienteExistente.setDtAtualizacao(LocalDate.now());
             return new ClienteDTO(repository.save(clienteExistente));
         } else {
             throw new ObjectNotFoundException("Cliente " + id + " não encontrado.");
