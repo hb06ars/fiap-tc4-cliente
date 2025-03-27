@@ -1,6 +1,7 @@
 package org.fiap.app.rest.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class ClienteRequest {
     private String nome;
 
     @NotNull(message = "O cpf não pode ser nulo. Por favor, forneça um valor.")
+    @Pattern(regexp = "^\\d{11}$", message = "O CPF deve conter exatamente 11 dígitos numéricos.")
     private String cpf;
 
     private LocalDate dataNascimento;
@@ -30,7 +32,7 @@ public class ClienteRequest {
     private String cidade;
     private String estado;
     private String complemento;
-    private LocalDate dtCriacao;
-    private LocalDate dtAtualizacao;
+    private LocalDate dtCriacao = LocalDate.now();
+    private LocalDate dtAtualizacao = LocalDate.now();
 
 }
