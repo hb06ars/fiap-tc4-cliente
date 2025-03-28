@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -59,8 +58,8 @@ class ControllerTest {
         clienteRequest.setNome("João da Silva");
         clienteRequest.setCpf("12345678901");
         clienteRequest.setCidade("São Paulo");
-        clienteRequest.setDtAtualizacao(LocalDate.now());
-        clienteRequest.setDtCriacao(LocalDate.now());
+        clienteRequest.setDtAtualizacao(null);
+        clienteRequest.setDtCriacao(null);
     }
 
     @Test
