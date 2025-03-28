@@ -8,7 +8,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.fiap.domain.dto.ClienteDTO;
 import org.fiap.domain.entity.ClienteEntity;
-import org.fiap.infra.repository.postgres.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class ClienteCustomRepositoryImplTest {
+class ClienteCustomRepositoryImplTest {
 
     @Mock
     private EntityManager entityManager;
@@ -42,9 +41,6 @@ public class ClienteCustomRepositoryImplTest {
     @Mock
     private Root<ClienteEntity> root;
 
-    @Mock
-    private ClienteRepository clienteRepository;
-
     @InjectMocks
     private ClienteCustomRepositoryImpl clienteCustomRepositoryImpl;
 
@@ -54,7 +50,7 @@ public class ClienteCustomRepositoryImplTest {
     }
 
     @Test
-    public void testFindAllByCriteria() {
+    void testFindAllByCriteria() {
         ClienteDTO clienteDTO = new ClienteDTO();
         clienteDTO.setNome("João");
         clienteDTO.setCpf("12345678901");
@@ -67,29 +63,23 @@ public class ClienteCustomRepositoryImplTest {
 
         PageRequest pageable = PageRequest.of(0, 10);
 
-        // Mock do EntityManager e do CriteriaBuilder
         when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
         when(criteriaBuilder.createQuery(ClienteEntity.class)).thenReturn(criteriaQuery);
         when(criteriaQuery.from(ClienteEntity.class)).thenReturn(root);
 
-        // Mock dos predicados
         Predicate predicateMock = mock(Predicate.class);
         when(criteriaBuilder.like(root.get("nome"), "%João%")).thenReturn(predicateMock);
         when(criteriaBuilder.equal(root.get("cpf"), "12345678901")).thenReturn(predicateMock);
 
-        // Mock do TypedQuery
         TypedQuery<ClienteEntity> typedQueryMock = mock(TypedQuery.class);
         when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQueryMock);
         when(typedQueryMock.getResultList()).thenReturn(clienteEntities);
 
-        // Mock dos métodos setFirstResult e setMaxResults para o TypedQuery
         when(typedQueryMock.setFirstResult(anyInt())).thenReturn(typedQueryMock);
         when(typedQueryMock.setMaxResults(anyInt())).thenReturn(typedQueryMock);
 
-        // Execução do método
         Page<ClienteDTO> result = clienteCustomRepositoryImpl.findAllByCriteria(clienteDTO, pageable, "nome", "asc");
 
-        // Verificação
         verify(entityManager).getCriteriaBuilder();
         verify(entityManager).createQuery(criteriaQuery);
         assert (result.getContent().size() == 1);
