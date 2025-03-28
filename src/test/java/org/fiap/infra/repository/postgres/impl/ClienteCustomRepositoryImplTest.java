@@ -16,13 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,21 +67,29 @@ public class ClienteCustomRepositoryImplTest {
 
         PageRequest pageable = PageRequest.of(0, 10);
 
+        // Mock do EntityManager e do CriteriaBuilder
         when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
         when(criteriaBuilder.createQuery(ClienteEntity.class)).thenReturn(criteriaQuery);
         when(criteriaQuery.from(ClienteEntity.class)).thenReturn(root);
 
+        // Mock dos predicados
         Predicate predicateMock = mock(Predicate.class);
         when(criteriaBuilder.like(root.get("nome"), "%João%")).thenReturn(predicateMock);
         when(criteriaBuilder.equal(root.get("cpf"), "12345678901")).thenReturn(predicateMock);
 
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(mock(TypedQuery.class));
-        when(entityManager.createQuery(criteriaQuery).getResultList()).thenReturn(clienteEntities);
+        // Mock do TypedQuery
+        TypedQuery<ClienteEntity> typedQueryMock = mock(TypedQuery.class);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(clienteEntities);
 
-        Page<ClienteDTO> expectedPage = new PageImpl<>(List.of(new ClienteDTO(cliente)), pageable, 1);
+        // Mock dos métodos setFirstResult e setMaxResults para o TypedQuery
+        when(typedQueryMock.setFirstResult(anyInt())).thenReturn(typedQueryMock);
+        when(typedQueryMock.setMaxResults(anyInt())).thenReturn(typedQueryMock);
 
+        // Execução do método
         Page<ClienteDTO> result = clienteCustomRepositoryImpl.findAllByCriteria(clienteDTO, pageable, "nome", "asc");
 
+        // Verificação
         verify(entityManager).getCriteriaBuilder();
         verify(entityManager).createQuery(criteriaQuery);
         assert (result.getContent().size() == 1);
